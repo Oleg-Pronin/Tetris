@@ -5,9 +5,9 @@ import android.graphics.Point
 import oleg_pronin.tetris.constants.FieldConstants
 import java.util.*
 
-class Block(private val shapeIndex: Int, private val color: BlockColor) {
-    private var frameNumber = 0
-    private var position: Point
+class BlockT(private val shapeIndex: Int, private val color: BlockColor) {
+    var frameNumber = 0
+    var position: Point
 
     init {
         position = Point(FieldConstants.COLUMN_COUNT.value / 2, 0)
@@ -27,27 +27,25 @@ class Block(private val shapeIndex: Int, private val color: BlockColor) {
     }
 
     val staticValue: Byte
-        get() = color.byteValue.toByte()
+        get() = color.byteValue
 
     val frameCount: Int
         get() = Shape.values()[shapeIndex].frameCount
 
-    enum class BlockColor(val rgbValue: Int, byteValue: Byte) {
+    enum class BlockColor(val rgbValue: Int, val byteValue: Byte) {
         PINK(Color.rgb(255, 105, 180), 2.toByte()),
         GREEN(Color.rgb(0, 128, 0), 3.toByte()),
         ORANGE(Color.rgb(255, 140, 0), 4.toByte()),
         YELLOW(Color.rgb(255, 255, 0), 5.toByte()),
         CYAN(Color.rgb(0, 255, 255), 6.toByte());
-
-        val byteValue: Int = byteValue.toInt()
     }
 
     companion object {
-        fun createBlock(): Block {
-            val random: Random = Random()
+        fun createBlock(): BlockT {
+            val random = Random()
             val shareIndex: Int = random.nextInt(Shape.values().size)
             val blockColor: BlockColor = BlockColor.values()[random.nextInt(BlockColor.values().size)]
-            val block: Block = Block(shareIndex, blockColor)
+            val block = BlockT(shareIndex, blockColor)
 
             block.position.x = block.position.x - Shape.values()[shareIndex].startPosition
 
@@ -56,7 +54,7 @@ class Block(private val shapeIndex: Int, private val color: BlockColor) {
 
         fun getColor(value: Byte): Int {
             for (color in BlockColor.values()) {
-                if (value.toInt() == color.byteValue) {
+                if (value == color.byteValue) {
                     return color.rgbValue
                 }
             }
